@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Routing;
+using OdeToFood.Services;
 
 namespace OdeToFood
 {
@@ -34,6 +36,7 @@ namespace OdeToFood
             services.AddMvc();  // Add Configure MVC
             services.AddSingleton(Configuration);
             services.AddSingleton<IGreeter, Greeter>();
+            services.AddScoped<IRestaurantData, InMemoryRestaurantData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,28 +62,42 @@ namespace OdeToFood
 
             app.UseFileServer();    // Enable use of static files
 
+            //app.UseMvcWithDefaultRoute();   // Use Default MVC
 
-            app.UseMvcWithDefaultRoute();   // Use MVC
+            app.UseMvc(ConfigureRoutes);    // Use configurable MVC
 
-            #region welcome page (NOT USED Anymore)
-            /*
-            //open Welcome page if "/welcome" is added to the main page
-            app.UseWelcomePage(new WelcomePageOptions
-            {
-                Path = "/welcome"
-            });
+            app.Run(ctx => ctx.Response.WriteAsync("Not found"));
 
-            app.Run(async (context) =>
-            {
+             #region Run welcome page (NOT USED Anymore)
+            ////open Welcome page if "/welcome" is added to the main page
+            //app.UseWelcomePage(new WelcomePageOptions
+            //{
+            //    Path = "/welcome"
+            //});
 
-              //  throw new Exception("Something went wrong");
+            //app.Run(async (context) =>
+            //{
 
-                var message = greeter.GetGreeting();
-                await context.Response.WriteAsync(message);
-            });
-            */
+            //  //  throw new Exception("Something went wrong");
+
+            //    var message = greeter.GetGreeting();
+            //    await context.Response.WriteAsync(message);
+            //});
             #endregion
 
+        }
+
+        private void ConfigureRoutes(IRouteBuilder routeBuilder)
+        {
+
+            /** MapRoute 
+             * //Home/Index
+             * = in "controller=Home" means "Home" is default parameter
+             * = in "action=Index" means "Index" is default parameter
+             * ? in "id?" means "/id" is optional
+             */
+
+            routeBuilder.MapRoute("Default", "{controller=Home}/{action=Index}/{id?}");
         }
     }
 }
