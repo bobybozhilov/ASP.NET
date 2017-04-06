@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Routing;
 using OdeToFood.Services;
+using OdeToFood.Entities;
 
 namespace OdeToFood
 {
@@ -32,7 +34,10 @@ namespace OdeToFood
             services.AddMvc();  // Add Configure MVC
             services.AddSingleton(Configuration);
             services.AddSingleton<IGreeter, Greeter>();
-            services.AddScoped<IRestaurantData, InMemoryRestaurantData>();
+            services.AddScoped<IRestaurantData, SqlRestaurantData>();
+            services.AddDbContext<OdeToFoodDbContext>(
+                options => options.UseSqlServer(
+                    Configuration.GetConnectionString("OdeToFood")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
