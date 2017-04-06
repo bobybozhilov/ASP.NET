@@ -1,27 +1,22 @@
-﻿<!--To set IntelliSense to the concrete model: write <at>model <Concrete Model> -->
-@model OdeToFood.ViewModels.HomePageViewModel
+﻿@model OdeToFood.ViewModels.HomePageViewModel
 
-<!--write "<html" and double tap "Tab" to auto-create html code-->
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>OdeToFood</title>
-</head>
-<body>
-    <h1>Welcome!</h1>
+
+@{
+    ViewBag.Title = "Home";
+}
+
+<h1>Welcome!</h1>
+
+@foreach (var restaurant in Model.Restaurants)
+{
+    @Html.Partial("_Summary", restaurant)
+}
+
+<div>
+    <br/>
+    <a asp-action="Create">Create</a>
+</div>
+
+@section footer{
     <h3>@Model.CurrentMessage</h3>
-
-    <table>
-        @foreach (var restaurant in Model.Restaurants)
-        {
-            <tr>
-                <td>
-                    <a href="/home/details/@restaurant.Id">Details</a>
-                    @Html.ActionLink("View", "Details", new { id = restaurant.Id})
-                </td>
-                <td>@restaurant.Name</td>
-            </tr>
-        }
-    </table>
-
-</body>
-</html>
+}
