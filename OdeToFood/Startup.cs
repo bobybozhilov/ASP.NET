@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Routing;
 using OdeToFood.Services;
 using OdeToFood.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace OdeToFood
 {
@@ -38,6 +39,16 @@ namespace OdeToFood
             services.AddDbContext<OdeToFoodDbContext>(
                 options => options.UseSqlServer(
                     Configuration.GetConnectionString("OdeToFood")));
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<OdeToFoodDbContext>();
+
+            //Configure Identity Settings
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,13 +74,13 @@ namespace OdeToFood
 
             app.UseFileServer();    // Enable use of static files
 
-            //app.UseMvcWithDefaultRoute();   // Use Default MVC
+            app.UseIdentity();
 
             app.UseMvc(ConfigureRoutes);    // Use configurable MVC
 
             app.Run(ctx => ctx.Response.WriteAsync("Not found"));
 
-             #region Run welcome page (NOT USED Anymore)
+            #region Run welcome page (NOT USED Anymore)
             ////open Welcome page if "/welcome" is added to the main page
             //app.UseWelcomePage(new WelcomePageOptions
             //{
