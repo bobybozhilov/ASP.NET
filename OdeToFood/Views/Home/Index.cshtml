@@ -1,5 +1,5 @@
 ﻿<!--To set IntelliSense to the concrete model: write <at>model <Concrete Model> -->
-@model IEnumerable<OdeToFood.Models.Restaurant>
+@model OdeToFood.ViewModels.HomePageViewModel
 
 <!--write "<html" and double tap "Tab" to auto-create html code-->
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -8,12 +8,16 @@
 </head>
 <body>
     <h1>Welcome!</h1>
+    <h3>@Model.CurrentMessage</h3>
 
     <table>
-        @foreach (var restaurant in Model)
+        @foreach (var restaurant in Model.Restaurants)
         {
             <tr>
-                <td>@restaurant.Id</td>
+                <td>
+                    <a href="/home/details/@restaurant.Id">Details</a>
+                    @Html.ActionLink("View", "Details", new { id = restaurant.Id})
+                </td>
                 <td>@restaurant.Name</td>
             </tr>
         }
