@@ -72,30 +72,11 @@ namespace OdeToFood
                 });
             }
 
-            app.UseFileServer();    // Enable use of static files
-
+            app.UseFileServer();
+            app.UseNodeModules(env.ContentRootPath);
             app.UseIdentity();
-
-            app.UseMvc(ConfigureRoutes);    // Use configurable MVC
-
+            app.UseMvc(ConfigureRoutes);
             app.Run(ctx => ctx.Response.WriteAsync("Not found"));
-
-            #region Run welcome page (NOT USED Anymore)
-            ////open Welcome page if "/welcome" is added to the main page
-            //app.UseWelcomePage(new WelcomePageOptions
-            //{
-            //    Path = "/welcome"
-            //});
-
-            //app.Run(async (context) =>
-            //{
-
-            //  //  throw new Exception("Something went wrong");
-
-            //    var message = greeter.GetGreeting();
-            //    await context.Response.WriteAsync(message);
-            //});
-            #endregion
 
         }
 
